@@ -1,1 +1,1 @@
-This is homework for Andersen courses.
+Andersen courses homework.
