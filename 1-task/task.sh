@@ -23,9 +23,6 @@ else
 
 fi
 
-#echo "Watch connection state are you want to trace?"
-#echo 'Enter 
-
 sudo netstat -tunapl | awk '/'${_pid}'/ {print $5}' | cut -d: -f1 | sort | uniq -c | sort > t1.tmp
 
 if [ $(wc -l t1.tmp | cut -d" " -f1) -gt 0 ]
@@ -43,7 +40,7 @@ then
     whois $IP | awk -F':' '/^Organization/ {print $2}' >> t2.tmp
   done
 
-  echo ""
+  echo
   echo "Your process have "$(wc -l t2.tmp | cut -d" " -f1)" esteblished connection(s)."
   echo "COUNT_CON  ORGANIZATION_NAME"
   cat t2.tmp | sort | uniq -c
