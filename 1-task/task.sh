@@ -23,7 +23,7 @@ else
 
 fi
 
-sudo netstat -tunapl | awk '/'${_pid}'/ {print $5}' | cut -d: -f1 | sort | uniq -c | sort > t1.tmp
+sudo netstat -tunapl | awk '/'${_pid}'/ {print $5}' | cut -d: -f1 | sort | uniq > t1.tmp
 
 if [ $(wc -l t1.tmp | cut -d" " -f1) -gt 0 ]
 then
@@ -35,7 +35,7 @@ then
 
   touch t2.tmp
 
-  for IP in $(cat t1.tmp | egrep '([0-9]+\.){3}[0-9]+')
+  for IP in $(cat t1.tmp)
   do
     whois $IP | awk -F':' '/^Organization/ {print $2}' >> t2.tmp
   done
