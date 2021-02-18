@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #qoutes.json should exist
-[ ! -e quotes.json ] && echo "File quotes.json does not exist" && exit
+[ ! -e quotes.json ] && curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
 
 #initialise values:
 #index for json-file
@@ -119,7 +119,7 @@ do
     echo "March ${years[a]}:"
     echo "Min qoute - ${mins[a]}; Max qoute - ${maxs[a]}"
     echo "Mean value - ${means[a]}; Valotile - ${valotile[a]}"
-    
+
     #calculate min valotile
     if [ 1 -eq $(echo "${valotile[a]} < ${minval}" | bc) ]
     then
