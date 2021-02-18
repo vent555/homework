@@ -1,0 +1,8 @@
+Task 2. Analize database and tell which March the price was the least volatile since 2015?
+
+    task.sh parse database of historical quotes for EUR/RUB pair to answer the question.
+
+DESCRIPTION
+    Script download and analise qoutes.json from https://yandex.ru/news/quotes/graph_2000.json
+    Min, max, mean and valotile values will displayed for March of every year from file.
+    Finaly, script answers the quastion.
