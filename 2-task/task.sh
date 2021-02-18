@@ -113,7 +113,9 @@ echo
 for a in $(seq 0 ${b})
 do
     #calculate valotile
-    valotile[a]=$(echo "scale=3; ${maxs[a]} - ${mins[a]}" | bc)
+    valotile[a]=$(echo "scale=3; ${maxs[a]} - ${means[a]} + ${means[a]} - ${mins[a]}" | bc)
+
+echo valotile[a]
 
     #output result
     echo "March ${years[a]}:"
