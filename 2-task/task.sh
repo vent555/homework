@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#qoutes.json should exist
-[ ! -e quotes.json ] && curl -s https://yandex.ru/news/quotes/graph_2000.json > ./quotes.json
+#qoutes.json should exist whith read permission
+[ ! -r /tmp/quotes.json ] && curl -s https://yandex.ru/news/quotes/graph_2000.json > /tmp/quotes.json
 
 #initialise values:
 #index for json-file
@@ -18,11 +18,11 @@ mins[b]=1000000
 maxs[b]=0
 
 #start parsing quotes.json
-while [ ! $(jq '.prices['${a}'][0]' quotes.json) = null ]
+while [ ! $(jq '.prices['${a}'][0]' /tmp/quotes.json) = null ]
 do
     
     #let date from json
-    let dt=$(jq '.prices['${a}'][0]' quotes.json)/1000
+    let dt=$(jq '.prices['${a}'][0]' /tmp/quotes.json)/1000
     
     #work only if month is Мarch
     if [ $(date "+%m" --date='@'${dt}) = 03 ]
@@ -43,8 +43,7 @@ do
         then 
             
             #sum qoutes values of current March
-            cur_value=$(jq -r '.prices['${a}'][1]' quotes.json)
-            #echo ${cur_value/./,}
+            cur_value=$(jq -r '.prices['${a}'][1]' /tmp/quotes.json)
             summa=$(echo "scale=3; ${summa} + ${cur_value}" | bc)
             let c+=1
 
@@ -52,17 +51,13 @@ do
             if [ 1 -eq $(echo "${mins[b]} > ${cur_value}" | bc) ]
             then
                 mins[b]=${cur_value}
-                #echo "min = ${mins[b]}"
             fi
 
             #find max value for March
             if [ 1 -eq $(echo "${maxs[b]} < ${cur_value}" | bc) ]
             then
                 maxs[b]=${cur_value}
-                #echo "max = ${maxs[b]}"
             fi            
-            #echo $summa
-            #echo "c=$c"
         else
             
             #else, the March of new year has come, add in ${years} value of new year
@@ -113,7 +108,7 @@ echo
 for a in $(seq 0 ${b})
 do
     #calculate valotile
-    valotile[a]=$(echo "scale=3; ${maxs[a]} - ${means[a]} + ${means[a]} - ${mins[a]}" | bc)
+    valotile[a]=$(echo "scale=3; ${maxs[a]}/2 - ${mins[a]}/2" | bc)
 
     #output result
     echo "March ${years[a]}:"
