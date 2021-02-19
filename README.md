@@ -1,16 +1,16 @@
-Andersen courses homework.
+ANDERSEN COURSES HOMEWORK
 
+#Task 1
+##Turn this one-liner into a nice script:
+```sh
+sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
+  | sort | uniq -c | sort | tail -n5 | grep -oP '(\d+\.){3}\d+' \
+  | while read IP ; do whois $IP | awk -F':' '/^Organization/ {print $2}' ; done
+```
 
-TASK 1
+#Task 2
+##Analize database and tell which March the price was the least volatile since 2015?
+###Download the database https://yandex.ru/news/quotes/graph_2000.json
 
-	Turn this one-liner into a nice script:
-
-	sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
-| sort | uniq -c | sort | tail -n5 | grep -oP '(\d+\.){3}\d+' \
-| while read IP ; do whois $IP | awk -F':' '/^Organization/ {print $2}' ; done
-
-
-TASK 2
-
-	Download the database https://yandex.ru/news/quotes/graph_2000.json
-	Analize database and tell which March the price was the least volatile since 2015?
+#Task 3
+##write a script that checks if there are open pull requests for a repository on GitHub.
