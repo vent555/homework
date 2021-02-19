@@ -23,30 +23,32 @@ else
 
 fi
 
-sudo netstat -tunapl | awk '/'${_pid}'/ {print $5}' | cut -d: -f1 | sort | uniq > t1.tmp
+netstat -tunapl 2>/dev/null | awk '/'${_pid}'/ {print $5}' | cut -d: -f1 | sort | uniq > /tmp/t1.tmp
 
-if [ $(wc -l t1.tmp | cut -d" " -f1) -gt 0 ]
+if [ $(wc -l /tmp/t1.tmp | cut -d" " -f1) -gt 0 ]
 then
 
-  if [ -e t2.tmp ]
+  if [ -e /tmp/t2.tmp ]
   then
-    rm t2.tmp
+    rm /tmp/t2.tmp
   fi
 
-  touch t2.tmp
+  touch /tmp/t2.tmp
 
-  for IP in $(cat t1.tmp)
+  for IP in $(cat /tmp/t1.tmp)
   do
-    whois $IP | awk -F':' '/^Organization/ {print $2}' >> t2.tmp
+    whois $IP | awk -F':' '/^Organization/ {print $2}' >> /tmp/t2.tmp
   done
 
   echo
-  echo "Your process have "$(wc -l t2.tmp | cut -d" " -f1)" esteblished connection(s)."
+  echo "Your process have "$(wc -l /tmp/t2.tmp | cut -d" " -f1)" esteblished connection(s)."
   echo "COUNT_CON  ORGANIZATION_NAME"
-  cat t2.tmp | sort | uniq -c
+  cat /tmp/t2.tmp | sort | uniq -c
 
 else
   echo "There is no entries for your process."
 fi
+
+rm -f /tmp/t[12].tmp
 
 exit
