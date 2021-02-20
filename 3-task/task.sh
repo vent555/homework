@@ -142,6 +142,7 @@ do
     echo "${user_name}:${lbl_xst}:${chcksok} / ${chcks}" >> ${workdir}/result
 
 done
+echo
 
 #find contributors with two or more pull requests
 echo "The most active contributors with more then one pull request:"
@@ -202,12 +203,18 @@ echo
 #user may seve result of parsing if he want
 echo "Do you want to save result file?"
 read -p "(yes/No): " choise
-    if [ "${choise:0:1}" = "y" -o "${choise:0:1}" = "Y" ]
-    then
-        read -p "(~/result): " choisepath
-        [ ${#choisepath} -eq 0 ] && choisepath="${HOME}/result"
-        cp ${workdir}/result ${choisepath}
+if [ "${choise:0:1}" = "y" -o "${choise:0:1}" = "Y" ]
+then
+    #path to save is homedir unless otherwise specified
+    read -p "(~/result): " choisepath
+    if [ ${#choisepath} -eq 0 ] 
+    then 
+        choisepath="${HOME}/result"
+    else
+        [ "${choisepath:0:1}" = "~" ] && choisepath=${HOME}${choisepath:1}
     fi
+    cp ${workdir}/result ${choisepath}
+fi
 
 #clean up after itself
 rm -rf ${workdir}
