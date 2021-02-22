@@ -20,3 +20,10 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 If no conections are esteblished, script will notify the user. 
 * Finally, for every IP address will executed whois request. Organization's name will extracted from whois respones. Name will wrote in t2.tmp file. File content will sorted and counted by unique value.
 * Final table will displayed.
+
+
+## Dependencies
+You should have `netstat` and `whois` utils installed.
+```sh
+sudo apt-get install net-tools whois -y
+```
