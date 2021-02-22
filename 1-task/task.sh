@@ -4,17 +4,19 @@ echo "Script will show informathion for Firefox process"
 echo "unless you enter another process name or ID as argument."
 echo
 
-if [ ${#@} -gt 0 ] 
+# Accept one and only one parameter
+# Otherwise fallback default
+if [ $# -eq 1 ]
 then
 
-  if echo $@ | egrep '^[1-9].[0-9]*$' &>/dev/null
+  if echo $1 | egrep '^[0-9]+$' &>/dev/null
   then
     echo "You have entered PID as argument."
   else
     echo "Possible, you have entered process name."
   fi
 
-  _pid=$@
+  _pid=$1
 
 else
 
