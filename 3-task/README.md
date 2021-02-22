@@ -5,9 +5,6 @@
 ```sh
 	./task.sh [argument1 argument2]
 ```
-
-
-## DESCRIPTION
 * argument1 - user name on GitHub
 * argument2 - user's repository
 
@@ -41,5 +38,5 @@
 * Lists user name and checks for every open PR which have that.
 
 ### Save result file
-* Suggests to save the result file. Be default file will not saved.
+* Suggests to save the result file. By default file will not saved.
 * If user makes choice to save the file, by default result will saved in home user directory.

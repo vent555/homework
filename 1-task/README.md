@@ -1,5 +1,5 @@
 # Task 1. Turn one-liner into a script.
-## Based on the instructor's assignment, a one-line script displays no more than five organizations with the resources of which network connections are established by firefox process.
+Based on the instructor's assignment, a one-line script displays no more than five organizations with the resources of which network connections are established by firefox process.
 ```sh
 sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
   | sort | uniq -c | sort | tail -n5 | grep -oP '(\d+\.){3}\d+' \
@@ -11,10 +11,8 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 ```sh
 	./task.sh [argument]
 ```
+* argument - process's name or ID, if no argument specified script will run for "firefox" process's name.
 
-
-## DESCRIPTION
-	argument - process's name or ID, if no argument specified script will run for "firefox" process's name.
 
 ## WORKFLOW
 * On first stage script will read and check argument. Script will try to recognize either entered PID or name. If no argument specified, then $_pid variable will assigned "firefox" value.

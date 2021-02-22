@@ -11,4 +11,4 @@ task.sh parse database of historical quotes for EUR/RUB pair to answer the quest
 * Calculated values are written to the corresponding variables and the script goes to the next year.
 * When database parsed, month valotile calculated and the script finds the minimum volatile value. 
 * Min, max, mean and valotile values will displayed for March of every year from file.
-* Finaly, script answers the quastion.
+* Finaly, script answers the question.
