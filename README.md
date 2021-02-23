@@ -10,7 +10,7 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 ```
 
 
-#T ask 2
+#Task 2
 ## Analize database and tell which March the price was the least volatile since 2015?
 * Download the database https://yandex.ru/news/quotes/graph_2000.json
 
@@ -20,3 +20,9 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 * list of the most productive contributors (authors of more than 1 open PR)
 * list of users which PRs has created with the labels
 * checks of every open PR
+
+
+# Task 4
+## Create and deploy your own service.
+* the service should receive `JSON` object and return a string decorated with your favorite emoji in the following manner:
+💀evilmartian💀evilmartian💀evilmartian💀
