@@ -1,10 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from emoji import emojize
 
-people = [{'name': 'Alice', 'birth-year': 1986},
-          {'name': 'Bob', 'birth-year': 1985}]
 
 app = Flask(__name__)
 
-@app.route('/api/get-json')
-def hello():
-    return jsonify(people)
+@app.route('/', methods=['GET', 'POST', 'DELETE', 'PUT'])                                                                                                    
+def add():                                                                                                                              
+    data = request.get_json()
+    strout = emojize(":thumbs_up:") + data["word"] + emojize(":thumbs_up:")
+    return strout
