@@ -10,13 +10,19 @@
 ## DESCRIPTION
 ### jsonproc.py
 
-Run module and try from commad line (any string value "word" and integer "count" accepted):
+* To get help just try:
+```sh
+curl http://example.site
+```
+- local testing use http://127.0.0.1:5000
+
+
+* Run module and try from commad line (any "word" string value and "count" integer  accepted):
 ```sh
 curl -XPOST -H 'Content-Type: application/json' -d'{"word":"just", "count": 5}' http://example.site
 ```
-Output will like: 👍just👍just👍just👍just👍just👍
+- Output will like: 👍just👍just👍just👍just👍just👍
 
 
 ### Known shortcomings
-(Will be eliminated)
 * no input checks
