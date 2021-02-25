@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serv pyservice
+After=network.target
+
+[Service]
+User=vit
+Group=www-data
+WorkingDirectory=/home/vit/pyservice
+Environment="PATH=/home/vit/pyservice/pyservenv/bin"
+ExecStart=/home/vit/pyservice/pyservenv/bin/gunicorn --workers 3 --bind unix:pyservice.sock -m 007 wsgi:app
+
+[Install]
+WantedBy=multi-user.target

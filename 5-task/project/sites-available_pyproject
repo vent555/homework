@@ -1,0 +1,10 @@
+server {
+  listen 80;
+  listen 8080;
+  server_name localhost wwww.localhost;
+
+  location / {
+    include proxy_params;
+    proxy_pass http://unix:/home/vit/pyservice/pyproject.sock;
+  }
+}
