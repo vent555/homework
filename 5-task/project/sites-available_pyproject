@@ -5,6 +5,6 @@ server {
 
   location / {
     include proxy_params;
-    proxy_pass http://unix:/home/vit/pyservice/pyproject.sock;
+    proxy_pass http://unix:/var/pyproject/pyproject.sock;
   }
 }
