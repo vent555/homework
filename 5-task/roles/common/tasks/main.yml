@@ -1,0 +1,21 @@
+---
+# This role contains common plays that will run on all nodes.
+- name: include vars
+  include_vars: common.yml
+
+- name: Copy file with iptables rules
+  copy:
+    src: files/iptables
+    dest: /tmp/
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+
+- name: Apply iptables rules
+  command: /usr/sbin/iptables-restore iptables
+  args:
+    chdir: /tmp/
+
+- name: install python
+  apt:
+    name: "{{ pythonenv }}"

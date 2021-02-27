@@ -1,0 +1,3 @@
+server_name: localhost
+key_file: /etc/nginx/ssl/nginx.key
+cert_file: /etc/nginx/ssl/nginx.crt

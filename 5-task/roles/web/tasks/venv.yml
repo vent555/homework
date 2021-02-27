@@ -1,0 +1,29 @@
+---
+# Create virtual environment, copy project and make a service
+- name: include vars
+  include_vars: venv-vars.yml
+
+- name: Copy project files with dir creation
+  copy:
+    src: project/
+    dest: /var/pyproject/
+    owner: vagrant
+    group: vagrant
+    mode: '0755'
+
+- name: Create python venv and install here wheel, gunicorn, flask, emoji in it
+  pip:
+    name: "{{ pipapps }}"
+    virtualenv: /var/pyproject/pyprojenv
+    virtualenv_command: pyvenv
+
+- name: Copy pyproject.service
+  copy:
+    src: pyproject.service
+    dest: /etc/systemd/system/pyproject.service
+
+- name: Start service pyproject
+  service:
+    name: pyproject
+    state: started
+    enabled: yes

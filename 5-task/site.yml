@@ -1,0 +1,15 @@
+---
+# This playbook deployes python project on debian servers.
+- name: apply common config to all nodes
+  hosts: all
+  become: true
+
+  roles:
+    - common
+
+- name: configure and deploy web servers
+  hosts: webservers
+  become: true
+
+  roles:
+    - web

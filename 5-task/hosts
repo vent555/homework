@@ -1,2 +1,7 @@
 [webservers]
-debvagrant ansible_host=127.0.0.1 ansible_port=2200 ansible_python_interpreter=/usr/bin/python3 ansible_private_key_file=debvagrant/.vagrant/machines/default/virtualbox/private_key
+debvagrant1 ansible_host=127.0.0.1 ansible_port=2222
+debvagrant2 ansible_host=127.0.0.1 ansible_port=2200
+debvagrant3 ansible_host=127.0.0.1 ansible_port=2201
+
+[webservers:vars]
+ansible_python_interpreter=/usr/bin/python3

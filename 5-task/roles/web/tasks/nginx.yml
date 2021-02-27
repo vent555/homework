@@ -1,0 +1,47 @@
+---
+# Install, configure nginx
+- name: include vars
+  include_vars: nginx-vars.yml
+
+- name: install nginx
+  apt:
+    name: nginx    
+
+- name: Template nginx config
+  template:
+    src: pyproject.j2
+    dest: /etc/nginx/sites-available/pyproject
+    force: yes
+
+- name: Create link to enable site (pyproject) in nginx
+  file:
+    src: /etc/nginx/sites-available/pyproject
+    dest: /etc/nginx/sites-enabled/pyproject
+    state: link
+
+- name: Delete default link of enabled sites in nginx
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Create dir ssl
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    mode: '0755'
+
+- name: Copy TLS certificate
+  copy:
+    src: nginx.crt
+    dest: "{{ cert_file }}"
+
+- name: Copy TLS key
+  copy:
+    src: nginx.key
+    dest: "{{ key_file }}"
+    mode: '0600'
+
+- name: Restart service nginx
+  service:
+    name: nginx
+    state: restarted

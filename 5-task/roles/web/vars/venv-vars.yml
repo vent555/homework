@@ -1,0 +1,5 @@
+pipapps:
+  - wheel
+  - gunicorn
+  - flask
+  - emoji

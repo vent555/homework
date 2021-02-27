@@ -1,0 +1,14 @@
+# {{ ansible_managed }}
+server {
+  listen 80;
+  listen 443 ssl;
+
+  server_name {{ server_name }};
+  ssl_certificate {{ cert_file }};
+  ssl_certificate_key {{ key_file }};
+
+  location / {
+    include proxy_params;
+    proxy_pass http://unix:/var/pyproject/pyproject.sock;
+  }
+}
