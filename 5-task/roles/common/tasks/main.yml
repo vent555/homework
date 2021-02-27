@@ -1,7 +1,7 @@
 ---
 # This role contains common plays that will run on all nodes.
 - name: include vars
-  include_vars: common.yml
+  include_vars: common-vars.yml
 
 - name: Copy file with iptables rules
   copy:
