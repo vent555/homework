@@ -11,18 +11,19 @@
   template:
     src: pyproject.j2
     dest: /etc/nginx/sites-available/pyproject
-    force: yes
+
+- name: Delete default link of enabled sites in nginx
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
 
 - name: Create link to enable site (pyproject) in nginx
   file:
     src: /etc/nginx/sites-available/pyproject
     dest: /etc/nginx/sites-enabled/pyproject
     state: link
-
-- name: Delete default link of enabled sites in nginx
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
+  notify:
+    - restart nginx
 
 - name: Create dir ssl
   file:
@@ -34,14 +35,13 @@
   copy:
     src: nginx.crt
     dest: "{{ cert_file }}"
+  notify:
+    - reload nginx
 
 - name: Copy TLS key
   copy:
     src: nginx.key
     dest: "{{ key_file }}"
     mode: '0600'
-
-- name: Restart service nginx
-  service:
-    name: nginx
-    state: restarted
+  notify:
+    - reload nginx
