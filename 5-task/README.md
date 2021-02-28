@@ -47,3 +47,17 @@ Template of available sites in nginx to deploy project roles/web/files/project/
 
 ### roles/web/vars/
 Encrypted files with values of varaibles. Use command above to view file content.
+
+
+## Project verification
+To verify deployed project try from localhost (port forwarding configuration must correspond Vagrantfile):
+```s
+curl https://127.0.0.1:8081
+curl -XPOST -H'Content-Type: application/json' -d'{"word":"just", "count": 5}' https://127.0.0.1:8081
+```
+OR
+```s
+curl --insecure https://127.0.0.1:4431
+curl -XPOST -H'Content-Type: application/json' -d'{"word":"just", "count": 5}' --insecure https://127.0.0.1:4431
+```
+
