@@ -29,4 +29,4 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 
 
 # Task 5
-## Create an ansible playbook that deploys the service to the VM
+## Create an ansible playbook that deploys the service to the VM.
