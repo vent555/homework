@@ -5,7 +5,8 @@
 
 - name: install nginx
   apt:
-    name: nginx    
+    name: nginx
+    state: present
 
 - name: Template nginx config
   template:

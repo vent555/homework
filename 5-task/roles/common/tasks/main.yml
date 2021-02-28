@@ -19,3 +19,4 @@
 - name: install python
   apt:
     name: "{{ pythonenv }}"
+    state: present

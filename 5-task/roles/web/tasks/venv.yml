@@ -16,6 +16,7 @@
     name: "{{ pipapps }}"
     virtualenv: /var/pyproject/pyprojenv
     virtualenv_command: pyvenv
+    state: present
 
 - name: Copy pyproject.service
   copy:
