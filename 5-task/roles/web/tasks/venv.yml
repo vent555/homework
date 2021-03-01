@@ -3,18 +3,39 @@
 - name: include vars
   include_vars: venv-vars.yml
 
+- name: Install git
+  apt:
+    name: git
+    state: present
+
 - name: Clone project from github
   git:
     repo: "{{ gitrepo }}"
     dest: /tmp/homework
 
-- name: Copy project files with dir creation
-  copy:
-    src: project/
-    dest: /var/pyproject/
+- name: Create pyproject directory
+  file:
+    path: /var/pyproject
+    state: directory
     owner: vagrant
     group: vagrant
     mode: '0755'
+
+# copy pyproject files from cloned repository,
+# because it is not separate repository, but part of homework repository
+# (two tasks below)
+- name: Copy pyproject files from cloned repository
+  command: /tmp/homework/4-task/pyproject/copyproject.sh
+
+- name: Set permissions and ownership on pyproject files
+  file:
+    path: '/var/pyproject/{{ item }}'
+    owner: vagrant
+    group: vagrant
+    mode: '0755'
+  with_items:
+    - jsonproc.py
+    - wsgi.py
 
 - name: Create python venv and install here wheel, gunicorn, flask, emoji in it
   pip:
