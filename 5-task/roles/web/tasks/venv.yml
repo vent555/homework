@@ -22,9 +22,14 @@
     mode: '0755'
 
 # copy pyproject files from cloned repository,
-# because it is not separate repository, but part of homework repository
-# (two tasks below)
-- name: Copy pyproject files from cloned repository
+# because it is not separate repo, but part of homework repository
+# (three tasks below)
+- name: Set permission on script file
+  file:
+    path: /tmp/homework/4-task/pyproject/copyproject.sh
+    mode: '0755' 
+
+- name: Copy pyproject files from cloned repository by script
   command: /tmp/homework/4-task/pyproject/copyproject.sh
 
 - name: Set permissions and ownership on pyproject files
