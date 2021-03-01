@@ -3,6 +3,11 @@
 - name: include vars
   include_vars: venv-vars.yml
 
+- name: Clone project from github
+  git:
+    repo: "{{ gitrepo }}"
+    dest: /tmp/homework
+
 - name: Copy project files with dir creation
   copy:
     src: project/
