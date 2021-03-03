@@ -3,10 +3,9 @@
 
 ## RUNING
 ```sh
-	./task.sh [argument1 argument2]
+	./task.sh https://github.com/ant-design/ant-design
 ```
-* argument1 - user name on GitHub
-* argument2 - user's repository
+Any web-link to GitHub repository allowed instead url above.
 
 
 ## FUNCTIONALITY
@@ -19,7 +18,7 @@
 ## WORKFLOW
 
 ### Check entred arguents
-* If no arguments entred then assuming user name and repository are ant-design.
+If no url entred then assuming user name and repository are ant-design (link in example).
 
 ### Download web pages
 * Download first page and check if open pull requests do not fit on one page.

@@ -4,21 +4,21 @@
 workdir="/tmp/task-3-$(tr -dc A-Za-z0-9_- </dev/urandom | head -c 8 | xargs)"
 mkdir ${workdir}
 
-#check input arguments
+#check input argument (assumes http-link to repozitory)
 badargs=false
-if [ ${#1} -gt 0 -a ${#2} -gt 0 ] 
+if [ "$(echo ${@} | awk -F'/' '{print$1}')" = "https:" ] 
 then
-    
-    if echo $1 | egrep '^[0-9a-zA-Z]+[-_.]*[0-9a-zA-Z]+$' &>/dev/null
+ 
+    if echo ${@} | awk -F'/' '{print$4}' | egrep '^[0-9a-zA-Z]+[-_.]*[0-9a-zA-Z]+$' &>/dev/null
     then
-        ghuser=$1
+        ghuser=$(echo ${@} | awk -F'/' '{print$4}')
     else
         badargs=true
     fi
 
-    if echo $2 | egrep '^[0-9a-zA-Z]+[-_.]*[0-9a-zA-Z]+$' &>/dev/null
+    if echo ${@} | awk -F'/' '{print$5}' | egrep '^[0-9a-zA-Z]+[-_.]*[0-9a-zA-Z]+$' &>/dev/null
     then
-        ghrep=$2
+        ghrep=$(echo ${@} | awk -F'/' '{print$5}')
     else
         badargs=true
     fi
@@ -29,15 +29,16 @@ fi
 
 if ${badargs}
 then
-    echo 'No arguments entered, assuming GitHub user and repository is ant-design and ant-design respectivly.'
+    echo 'Bad or no argument entered, assuming GitHub user and repository are ant-design.'
     echo
     ghuser=ant-design
     ghrep=ant-design
 fi
 
 #try to download page whith pull requests
-echo "Try to download page whith open pull requests from https://github.com/${ghuser}/${ghrep}/pulls?q=is%3Aopen+"
-curl https://github.com/${ghuser}/${ghrep}/pulls?q=is%3Aopen+ > ${workdir}/pg1
+echo "Try to download page with open pull requests from:"
+echo "https://github.com/${ghuser}/${ghrep}/pulls?q=is%3Aopen+"
+curl -s https://github.com/${ghuser}/${ghrep}/pulls?q=is%3Aopen+ > ${workdir}/pg1
 echo
 
 #looking for how much pages of pull requests
@@ -46,19 +47,17 @@ numb_pgs=$(cat ${workdir}/pg1 | awk -F'<' '/data-total-pages/ {print$5}' | awk -
 #download all rest pages (if more then one) with pull requests list
 if [ ${#numb_pgs} -gt 0 ]
 then
-    np=2
+    np=${numb_pgs}
     echo "More then one page with pull requests. Downloading all pages..."
-    while [ ${numb_pgs} -ge ${np} ]
+    echo -n "${np} "
+    while [ ${np} -gt 1 ]
     do
-        echo "Page ${np}"
-        curl "https://github.com/${ghuser}/${ghrep}/pulls?page=${np}&q=is%3Aopen+" > ${workdir}/pg${np}
-        echo
-        let np+=1
+        curl -s "https://github.com/${ghuser}/${ghrep}/pulls?page=${np}&q=is%3Aopen+" > ${workdir}/pg${np}
+        let np-=1
+        echo -n "${np} "
     done
 fi
-
-#all pullers
-#cat ${workdir}/pg1 | awk -F'<' '/Open pull requests created by/ {print$2}' | awk -F'>' '{print$2}' > pullers
+echo
 
 #set cycle dilimiter as "\n"
 IFS=$'\n'
