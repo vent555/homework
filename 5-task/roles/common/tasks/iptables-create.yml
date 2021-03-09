@@ -1,0 +1,60 @@
+---
+- name: include vars
+  include_vars: iptables.yml
+
+- name: create iptables rules
+  block:
+  - name: Set policy
+    iptables:
+      chain: "{{ item }}"
+      policy: ACCEPT
+    with_items:
+      - INPUT
+      - FORWARD
+  - name: Flush rules
+    iptables:
+      chain: "{{ item }}"
+      flush: yes
+    with_items:
+      - INPUT
+      - OUTPUT
+      - FORWARD
+  - name: Allow input to lo
+    iptables:
+      chain: INPUT
+      in_interface: lo
+      jump: ACCEPT
+  - name: Allow established connections
+    iptables:
+      chain: INPUT
+      ctstate: ESTABLISHED,RELATED
+      jump: ACCEPT
+  - name: Open ports
+    iptables:
+      chain: INPUT
+      destination_port: "{{ item }}"
+      protocol: tcp
+      jump: ACCEPT
+    with_items: "{{ ports }}"
+  - name: Set policy
+    iptables:
+      chain: "{{ item }}"
+      policy: DROP
+    with_items:
+      - INPUT
+      - FORWARD
+    become: yes
+
+- name: Install iptables-persistent
+  apt:
+    name: iptables-persistent
+    state: present
+
+- name: Save iptables rules
+  command: /usr/sbin/iptables-save -f /etc/iptables/rules.v4
+
+- name: Enable netfilter-persistent service
+  service:
+    name: netfilter-persistent
+    state: started
+    enabled: yes

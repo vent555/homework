@@ -1,0 +1,9 @@
+---
+# Install basic packages
+- name: include vars
+  include_vars: app-list.yml
+
+- name: install python
+  apt:
+    name: "{{ pythonenv }}"
+    state: present

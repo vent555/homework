@@ -19,22 +19,24 @@ Main deploy file that include two roles: common and web.
 ### hosts
 Inventory file contains list of mananged grouped nodes. For group of hosts applyed setting to use Python3.
 
-### roles/common/tasks/main.yml
-Contains tasks applyed to all nodes.
+### roles/common/tasks/
+* main.yml - Tasks applyed to all nodes splits onto two stages:
+* iptables-cp.yml or iptables-create.yml - apply iptables rules, 
+* packages.yml - install all needed packages.
 
 ### roles/common/files/iptables
-Setted on all nodes.
-
-### roles/common/vars/common-vars.yml
-Encrypted file with values of varaibles. Use command bellow to view file content:
+Encrypted file with iptables rules which setted on all nodes.
 ```sh
-ansible-vault view --vault-password-file passfile roles/common/vars/common-vars.yml
+ansible-vault view --vault-password-file passfile roles/common/files/iptables
 ```
+
+### roles/common/vars/
+common-vars.yml / iptables.yml - encrypted files with values of varaibles. Use command above to view file content.
 
 ### roles/web/tasks/
 * main.yml - Tasks applyed to group of nodes "webservers" splits onto two stages:
-* venv.yml - installing virtual environment and project service, 
-* nginx.yml - installing and configuration nginx.
+* venv.yml - install virtual environment and project service, 
+* nginx.yml - install and configure nginx.
 
 ### roles/web/files/
 * pyproject.service - file to start pyproject service.

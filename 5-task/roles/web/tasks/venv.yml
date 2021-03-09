@@ -12,6 +12,7 @@
   git:
     repo: "{{ gitrepo }}"
     dest: /tmp/homework
+    force: yes
 
 - name: Create pyproject directory
   file:

@@ -23,6 +23,7 @@ Any web-link to GitHub repository allowed instead url above.
 * list of the most productive contributors (authors of more than 1 open PR)*
 * list of users which PRs has created with the labels
 * list of checks for every open PR*
+---
 *task_api.sh will show additional information about contributors, but will not show list of checks.
 
 
