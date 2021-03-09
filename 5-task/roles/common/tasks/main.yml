@@ -1,4 +1,8 @@
 ---
+- name: update cache befor pakage install
+  apt:
+    update_cache: yes
+
 #copy file with iptables rules and apply its
 #- include: iptables-cp.yml
 
