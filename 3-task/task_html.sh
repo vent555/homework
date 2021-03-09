@@ -4,41 +4,15 @@
 workdir="/tmp/task-3-$(tr -dc A-Za-z0-9_- </dev/urandom | head -c 8 | xargs)"
 mkdir ${workdir}
 
+source task.func
+
 #check input argument (assumes http-link to repozitory)
-badargs=false
-if [ "$(echo ${@} | awk -F'/' '{print$1}')" = "https:" ] 
-then
- 
-    if echo ${@} | awk -F'/' '{print$4}' | egrep '^[0-9a-zA-Z]+[-_.]*[0-9a-zA-Z]+$' &>/dev/null
-    then
-        ghuser=$(echo ${@} | awk -F'/' '{print$4}')
-    else
-        badargs=true
-    fi
-
-    if echo ${@} | awk -F'/' '{print$5}' | egrep '^[0-9a-zA-Z]+[-_.]*[0-9a-zA-Z]+$' &>/dev/null
-    then
-        ghrep=$(echo ${@} | awk -F'/' '{print$5}')
-    else
-        badargs=true
-    fi
-    
-else
-    badargs=true
-fi
-
-if ${badargs}
-then
-    echo 'Bad or no argument entered, assuming GitHub user and repository are ant-design.'
-    echo
-    ghuser=ant-design
-    ghrep=ant-design
-fi
+gh_usr_repo=$(inptchck ${@})
 
 #try to download page whith pull requests
 echo "Try to download page with open pull requests from:"
-echo "https://github.com/${ghuser}/${ghrep}/pulls?q=is%3Aopen+"
-curl -s https://github.com/${ghuser}/${ghrep}/pulls?q=is%3Aopen+ > ${workdir}/pg1
+echo "https://github.com/${gh_usr_repo}/pulls?q=is%3Aopen+"
+curl -s https://github.com/${gh_usr_repo}/pulls?q=is%3Aopen+ > ${workdir}/pg1
 echo
 
 #looking for how much pages of pull requests
@@ -52,7 +26,7 @@ then
     echo -n "${np} "
     while [ ${np} -gt 1 ]
     do
-        curl -s "https://github.com/${ghuser}/${ghrep}/pulls?page=${np}&q=is%3Aopen+" > ${workdir}/pg${np}
+        curl -s "https://github.com/${gh_usr_repo}/pulls?page=${np}&q=is%3Aopen+" > ${workdir}/pg${np}
         let np-=1
         echo -n "${np} "
     done
@@ -109,7 +83,7 @@ do
             then
 
                 #save all
-                echo "${user_name}:${lbl_xst}:${chcksok} / ${chcks}" >> ${workdir}/result
+                echo "${user_name},${lbl_xst},${chcksok} / ${chcks}" >> ${workdir}/result
 
              #else looking for another values and issue_value too
             else
@@ -129,91 +103,48 @@ do
                     chcks=$(echo ${chck_xst} | cut -d" " -f3)
                     chcksok=$(echo ${chck_xst} | cut -d" " -f1)
                 fi
-                
             fi
-
         fi
-
     done
-
     echo
     #save last values for every file
-    echo "${user_name}:${lbl_xst}:${chcksok} / ${chcks}" >> ${workdir}/result
-
+    echo "${user_name},${lbl_xst},${chcksok} / ${chcks}" >> ${workdir}/result
 done
 echo
 
 #find contributors with two or more pull requests
 echo "The most active contributors with more then one pull request:"
 echo "NMBR_PR USER_NAME"
-for str in $(cat ${workdir}/result | cut -d: -f1 | sort | uniq -c)
+for str in $(cat ${workdir}/result | cut -d, -f1 | sort | uniq -c)
 do
     [ $(echo ${str} | tr -s ' ' | cut -d" " -f2) -gt 1 ] && echo ${str}
 done
 echo
 
 #pull requests with label
-user_name=
-np=0
-echo "Label is attached to PR of following users:"
-for str in $(cat ${workdir}/result | sort)
-do
-    #check if PR have label
-    if $(echo ${str} | cut -d: -f2)
-    then
-        
-        #output will contain only one user name even user have more then one open PR
-        usr_nm=$(echo ${str} | cut -d: -f1)
-        if [ "${user_name}" != "${usr_nm}" ]
-        then
-            #will output in four column
-            let np+=1
-            if [ ${#usr_nm} -lt 8 ]
-            then echo -ne "${usr_nm}\t"
-            else echo -n ${usr_nm}
-            fi
-            echo -ne "\t"
-            user_name=${usr_nm}
-            [[ $np%4 -eq 0 ]] && echo
-        fi
-    fi
-done
+pr_labels ${workdir}
 echo
 echo
+
 #display checks of every open PR
 echo "User's PR with checks:"
-echo -e "USER_NAME\tCHEKS_OK / CHECKS"
-for str in $(cat ${workdir}/result | cut -d: -f1,3 | sort)
+echo -e "USER_NAME\t\tCHEKS_OK / CHECKS"
+for str in $(cat ${workdir}/result | cut -d, -f1,3 | sort)
 do
     #check if PR have chcks
-    if [ -n $(echo ${str} | cut -d: -f2) ]
+    if [ -n $(echo ${str} | cut -d, -f2) ]
     then
         #
-        usr_nm=$(echo ${str} | cut -d: -f1)
-        if [ ${#usr_nm} -lt 8 ]
-        then echo -ne "${usr_nm}\t"
-        else echo -n ${usr_nm}
-        fi        
+        usr_nm=$(echo ${str} | cut -d, -f1)
+        tabs ${#usr_nm} ${usr_nm}
         echo -ne "\t"
-        echo ${str} | cut -d: -f2
+        echo ${str} | cut -d, -f2
     fi
 done
 echo
+
 #user may seve result of parsing if he want
-echo "Do you want to save result file?"
-read -p "(yes/No): " choise
-if [ "${choise:0:1}" = "y" -o "${choise:0:1}" = "Y" ]
-then
-    #path to save is homedir unless otherwise specified
-    read -p "(~/result): " choisepath
-    if [ ${#choisepath} -eq 0 ] 
-    then 
-        choisepath="${HOME}/result"
-    else
-        [ "${choisepath:0:1}" = "~" ] && choisepath=${HOME}${choisepath:1}
-    fi
-    cp ${workdir}/result ${choisepath}
-fi
+save_result ${workdir}
 
 #clean up after itself
 rm -rf ${workdir}

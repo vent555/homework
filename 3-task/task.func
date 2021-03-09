@@ -1,0 +1,85 @@
+#check input argument (assumes http-link to repozitory)
+inptchck() {
+    badargs=false
+    if [ "$(echo ${@} | awk -F'/' '{print$1}')" = "https:" ] 
+    then
+    
+        if echo ${@} | awk -F'/' '{print$4}' | egrep '^[0-9a-zA-Z]+[-_.0-9a-zA-Z]*[0-9a-zA-Z]+$' &>/dev/null
+        then
+            ghuser=$(echo ${@} | awk -F'/' '{print$4}')
+        else
+            badargs=true
+        fi
+
+        if echo ${@} | awk -F'/' '{print$5}' | egrep '^[0-9a-zA-Z]+[-_.0-9a-zA-Z]*[0-9a-zA-Z]+$' &>/dev/null
+        then
+            ghrep=$(echo ${@} | awk -F'/' '{print$5}')
+        else
+            badargs=true
+        fi
+        
+    else
+        badargs=true
+    fi
+
+    if ${badargs}
+    then
+        echo "diasurgical/devilutionX"
+    else
+        echo "${ghuser}/${ghrep}"
+    fi
+}
+
+#pretty output with tabs
+tabs() {
+    if [ ${1} -lt 8 ]
+    then echo -ne "${2}\t\t"
+    elif [ ${1} -lt 16 ]
+    then echo -ne "${2}\t"
+    else echo -n ${2}
+    fi
+}
+
+#pull requests with label
+pr_labels() {
+    user_name=
+    np=0
+    echo "Label is attached to PR of following users:"
+    for str in $(cat ${1}/result | sort)
+    do
+        #check if PR have label
+        if $(echo ${str} | cut -d, -f2)
+        then
+            
+            #output will contain only one user name even user have more then one open PR
+            usr_nm=$(echo ${str} | cut -d, -f1)
+            if [ "${user_name}" != "${usr_nm}" ]
+            then
+                tabs ${#usr_nm} ${usr_nm}
+                #will output in four column
+                let np+=1
+                echo -ne "\t"
+                user_name=${usr_nm}
+                [[ $np%3 -eq 0 ]] && echo
+            fi
+        fi
+    done
+}
+
+#user may save result of parsing if he want
+save_result() {
+    echo "Do you want to save result file?"
+    read -p "(yes/No): " choise
+    if [ "${choise:0:1}" = "y" -o "${choise:0:1}" = "Y" ]
+    then
+        #path to save is homedir unless otherwise specified
+        read -p "(~/result): " choisepath
+        if [ ${#choisepath} -eq 0 ] 
+        then 
+            choisepath="${HOME}/result"
+        else
+            [ "${choisepath:0:1}" = "~" ] && choisepath=${HOME}${choisepath:1}
+        fi
+        cp ${1}/result ${choisepath}
+    fi
+}
