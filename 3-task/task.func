@@ -4,7 +4,7 @@ inptchck() {
     if [ "$(echo ${@} | awk -F'/' '{print$1}')" = "https:" ] 
     then
     
-        if echo ${@} | awk -F'/' '{print$4}' | egrep '^[0-9a-zA-Z]+[-_.0-9a-zA-Z]*[0-9a-zA-Z]+$' &>/dev/null
+        if echo ${@} | awk -F'/' '{print$4}' | egrep '^[0-9a-zA-Z].[-0-9a-zA-Z]{0,37}[0-9a-zA-Z].$' &>/dev/null
         then
             ghuser=$(echo ${@} | awk -F'/' '{print$4}')
         else
