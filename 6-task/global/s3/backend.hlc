@@ -1,0 +1,4 @@
+bucket = "vent555-bucket"
+region = "eu-central-1"
+dynamodb_table = "vent555-bucket-locks"
+encrypt = true

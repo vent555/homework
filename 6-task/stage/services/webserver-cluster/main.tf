@@ -1,13 +1,9 @@
-variable "server_port" {
-  description   = "Server port to listen http requests"
-  type          = number
-  default       = 8080
-}
-#output server public IP address 
-output "alb_dns_name" {
-  #link variable with ec2 instance
-  value = aws_lb.example.dns_name
-  description = "DNS name of the load balancer"
+#configure terraform to store state files in s3bucket
+#!!!key must be different in every module!!!
+terraform {
+    backend "s3" {
+        key = "stage/services/webserver-cluster/terraform.tfstate"
+    }
 }
 
 #point provider and region
@@ -27,6 +23,29 @@ data "aws_subnet_ids" "default" {
   #link to aws_vpc data source by id  
   vpc_id = data.aws_vpc.default.id
 }
+
+#Data source lets pick information about mysql database
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config = {
+    bucket = "vent555-bucket"
+    key = "stage/data-stores/mysql/terraform.tfstate"
+    region = "eu-central-1"
+  }
+}
+
+#Data source template_file creates user data file with bash script
+#Transher vars into script-file, gain complite bash script
+data "template_file" "user_data" {
+  template = file("user-data.sh")
+
+  vars = {
+    server_port = var.server_port
+    db_address  = data.terraform_remote_state.db.outputs.address
+    db_port     = data.terraform_remote_state.db.outputs.port
+  }
+} 
 
 #Application load balancer
 resource "aws_lb" "example" {
@@ -110,7 +129,7 @@ resource "aws_lb_target_group" "asg" {
 #auto scaling group to launch EC2 instance on demand
 resource "aws_autoscaling_group" "test-group" {
   #use link as launch_configuration name
-  launch_configuration  = aws_launch_configuration.test-1.name
+  launch_configuration  = aws_launch_configuration.test.name
   #extract VPC zone ids from data source aws_subnet_ids
   vpc_zone_identifier   = data.aws_subnet_ids.default.ids
   #link to Target group in ALB
@@ -131,18 +150,15 @@ resource "aws_autoscaling_group" "test-group" {
 
 #use aws_launch_configuration instead aws_instance =>
 #change ami to image_id, vpc_security_group_ids to security_groups
-resource "aws_launch_configuration" "test-1" {
+resource "aws_launch_configuration" "test" {
   image_id          = "ami-0767046d1677be5a0"
   instance_type     = "t2.micro"
   #to link ec2-instance with security group:
   security_groups   = [ aws_security_group.instance.id ]
   
-  #create start-on-boot script
-  user_data         = <<-EOF
-                        #!/bin/bash
-                        echo "Hello, World!" > index.html
-                        nohup busybox httpd -f -p ${var.server_port} &
-                        EOF
+  #get result from data source template_file
+  user_data = data.template_file.user_data.rendered
+
   #configuration param is used then auto scaling implemented
   lifecycle {
     create_before_destroy = true
