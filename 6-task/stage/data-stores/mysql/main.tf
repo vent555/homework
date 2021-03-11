@@ -16,4 +16,6 @@ resource "aws_db_instance" "example" {
     name = "exampledatabase"
     username = "admin"
     password = var.db_password
+    skip_final_snapshot = true
+    apply_immediately = true
 }
