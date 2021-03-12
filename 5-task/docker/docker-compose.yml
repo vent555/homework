@@ -1,0 +1,13 @@
+version: "2"
+services:
+  pyproj:
+    build:
+      context: ../../
+      dockerfile: 5-task/docker/Dockerfile
+    volumes: 
+      - ./:/usr/src/app/
+    ports:
+      - 8080:5000
+    environment:
+      PORT: 5000
+      FLASK_DEBUG: 1
