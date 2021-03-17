@@ -14,12 +14,16 @@ provider "aws" {
 module "webserver_cluster" {
     #where module is located. Link on Github repository.
     #Always download latest version for test cluster.
-    source = "github.com/vent555/tf-module-example//services/webserver-cluster"
+    source = "github.com/vent555/tf-module-example//services/webserver-cluster?ref=v0.1.0"
+    #source = "../../modules/services/webserver-cluster"
     #cluster_name to deploy
     cluster_name = "webservers-stage"
     #where the information about the DB connection is originated for the stage cluster
     db_remote_state_bucket = "vent555-bucket"
     db_remote_state_key = "stage/data-stores/mysql/terraform.tfstate"
+    #where the information about the VPC is originated for the stage cluster
+    vpc_remote_state_bucket = "vent555-bucket"
+    vpc_remote_state_key = "stage/network/vpc-simple/terraform.tfstate"
     #Type and min/max number (for ASG) of EC2 instance to run
     instance_type = "t2.micro"
     min_size = 2

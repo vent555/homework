@@ -12,7 +12,7 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 
 # Task 2
 ## Analize a database and tell which March the price was the least volatile since 2015?
-* Download the database https://yandex.ru/news/quotes/graph_2000.json
+Download the database https://yandex.ru/news/quotes/graph_2000.json
 
 
 # Task 3
@@ -24,7 +24,7 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 
 # Task 4
 ## Create your own service.
-* the service should receive `JSON` object and return a string decorated with your favorite emoji in the following manner:
+the service should receive `JSON` object and return a string decorated with your favorite emoji in the following manner:
 💀evilmartian💀evilmartian💀evilmartian💀
 
 
@@ -32,5 +32,10 @@ sudo netstat -tunapl | awk '/firefox/ {print $5}' | cut -d: -f1 \
 ## Create an ansible playbook that deploys the service to the VM.
 
 
-# Task 6.
+# Task 6
 ## Create terraform configuration files to deploy infrastructure in the AWS cloud.
+Infrastructure consists of:
+* an auto scaling group of web-servers isolated in a private network;
+* a data base isolated in a private network;
+* a load balancer which receives incoming http requests and forwards its to the web-servers group.
+The configuration must provides for any number of infrastructure's copies for a testing purpose.
