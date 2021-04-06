@@ -31,6 +31,8 @@ the service should receive `JSON` object and return a string decorated with your
 # Task 5
 ## Create an ansible playbook that deploys the service to the VM.
 
+# Task 5+
+## Create docker container with your own app inside.
 
 # Task 6
 ## Create terraform configuration files to deploy infrastructure in the AWS cloud.
