@@ -38,4 +38,10 @@ Infrastructure consists of:
 * an auto scaling group of web-servers isolated in a private network;
 * a data base isolated in a private network;
 * a load balancer which receives incoming http requests and forwards its to the web-servers group.
+- 
 The configuration must provides for any number of infrastructure's copies for a testing purpose.
+
+# Task 7
+## Setup two PostgreSQL servers with primary-standby configuration.
+* Analize performance with asynchronous and synchronous replication mode;
+* Prepare reports with pgbadger.
