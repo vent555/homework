@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hellos
+  labels:
+    app: my-hellos
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      project: test
+  template:
+    metadata:
+      labels:
+        project: test
+    spec:
+      containers:
+        - name: pyproj
+          image: 640947690715.dkr.ecr.eu-central-1.amazonaws.com/pyproj:latest
+          ports:
+            - containerPort: 5000
+        - name: goproj
+          image: 640947690715.dkr.ecr.eu-central-1.amazonaws.com/goproj:build-2d63bd35-7c10-4b0a-9726-443f7591a12f
+          ports:
+            - containerPort: 8080
+
+#selector, template, what are they for?
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hellos-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hellos
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target: 
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

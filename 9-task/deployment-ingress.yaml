@@ -1,0 +1,229 @@
+#py-proj deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: py-proj    #Autoscaling will look for those deployment name
+  labels:
+    app: py-proj
+spec:
+  #replicas: 2  # It is not need, because there is autoscaling
+  selector:
+    matchLabels:
+      project: py-proj
+  template:
+    metadata:
+      labels:
+        project: py-proj     #Service will look for those PODs labels
+    spec:
+      containers:
+        - name: pyproj
+          image: 640947690715.dkr.ecr.eu-central-1.amazonaws.com/pyproj:latest
+          ports:
+            - containerPort: 5000
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: py-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: py-proj             #Selecting deployment with those name
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target: 
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: py-svc
+  labels:
+    env: prod
+    owner: vent555
+spec:
+  selector:
+    project: py-proj   #Selecting PODs with those labels
+  ports:
+    - name      : py-proj
+      protocol  : TCP
+      port      : 5000
+      targetPort: 5000
+
+#go-proj deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-proj    #Autoscaling will look for those deployment name
+  labels:
+    app: go-proj
+spec:
+  #replicas: 2  # It is not need, because there is autoscaling
+  selector:
+    matchLabels:
+      project: go-proj
+  template:
+    metadata:
+      labels:
+        project: go-proj     #Service will look for those PODs labels
+    spec:
+      containers:
+        - name: goproj
+          #image: 640947690715.dkr.ecr.eu-central-1.amazonaws.com/goproj:build-2d63bd35-7c10-4b0a-9726-443f7591a12f
+          image: 640947690715.dkr.ecr.eu-central-1.amazonaws.com/goproj:latest
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: go-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: go-proj             #Selecting deployment with those name
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target: 
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-svc
+  labels:
+    env: prod
+    owner: vent555
+spec:
+  selector:
+    project: go-proj   #Selecting PODs with those labels
+  ports:
+    - name      : go-proj
+      protocol  : TCP
+      port      : 8080
+      targetPort: 8080
+
+#tomcat deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tom-cat    #Autoscaling will look for those deployment name
+  labels:
+    app: tom-cat
+spec:
+  #replicas: 2  # It is not need, because there is autoscaling
+  selector:
+    matchLabels:
+      project: tom-cat
+  template:
+    metadata:
+      labels:
+        project: tom-cat     #Service will look for those PODs labels
+    spec:
+      containers:
+        - name: tomcat
+          image: tomcat:8.5.38
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tom-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tom-cat             #Selecting deployment with those name
+  minReplicas: 2
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target: 
+        type: Utilization
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-svc
+  labels:
+    env: prod
+    owner: vent555
+spec:
+  selector:
+    project: tom-cat   #Selecting PODs with those labels
+  ports:
+    - name      : tom-cat
+      protocol  : TCP
+      port      : 8080
+      targetPort: 8080
+
+#Ingress
+# ---
+# apiVersion: networking.k8s.io/v1beta1
+# kind: Ingress
+# metadata:
+#   name: ingress-hosts
+
+# spec:
+#   rules: 
+#   - host: goweb.vent555-test.net
+#     http:
+#       paths:
+#         - backend:
+#             serviceName: go-svc
+#             servicePort: 8080
+#   - host: pyweb.vent555-test.net
+#     http:
+#       paths:
+#         - backend:
+#             serviceName: py-svc
+#             servicePort: 5000
+#   - host: tomcat.vent555-test.net
+#     http:
+#       paths:
+#         - backend:
+#             serviceName: tomcat-svc
+#             servicePort: 8080

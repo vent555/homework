@@ -1,0 +1,15 @@
+apiVersion : v1
+kind: Pod
+metadata:
+  name: py-hello
+  labels:
+    env  : prod
+    app  : main
+    tier : frontend
+    owner: vent555
+spec:
+  containers:
+    - name: pyproj
+      image: 640947690715.dkr.ecr.eu-central-1.amazonaws.com/pyproj:latest
+      ports:
+        - containerPort: 5000
